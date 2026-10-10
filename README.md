@@ -1,84 +1,378 @@
-# CyberTrace — Frontend
+# 🔐 CyberTrace – Digital Forensics Case Management System
 
-React + Vite frontend for the CyberTrace backend. Talks to the Spring Boot
-API over plain `fetch`/axios with a JWT stored in `localStorage`.
+A full-stack cybersecurity application designed to streamline digital forensic investigations through centralized case management, investigator coordination, investigation notes, findings management, and audit tracking.
 
-## Setup
+CyberTrace provides a role-based interface for administrators and investigators, helping organize investigation workflows and manage case-related information through a centralized platform.
+
+---
+
+## 📌 Table of Contents
+
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [User Roles](#-user-roles)
+- [Technology Stack](#-technology-stack)
+- [Project Architecture](#-project-architecture)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Backend Configuration](#-backend-configuration)
+- [Demo Login](#-demo-login)
+- [Security Considerations](#-security-considerations)
+- [Future Enhancements](#-future-enhancements)
+- [Developer](#-developer)
+
+---
+
+## 🎯 Overview
+
+Digital forensic investigations involve organizing cases, managing investigation activities, documenting findings, and maintaining records of relevant actions.
+
+CyberTrace aims to simplify this workflow by providing a centralized web application for managing forensic investigation cases and coordinating investigators.
+
+The application combines a React-based frontend, a Spring Boot backend, and a MySQL database to support communication between the user interface, application services, and persistent data storage.
+
+The system uses role-based access to separate administrative functions from investigator activities.
+
+## ✨ Key Features
+
+### 🔑 Authentication
+- User login and authentication.
+- Role-based access to application features.
+- Protected application pages according to user permissions.
+
+### 📁 Case Management
+- View and manage investigation cases.
+- Organize case-related information.
+- Support investigation workflow management.
+
+### 👥 Investigator Management
+- Create and manage investigator accounts through administrative functionality.
+- View registered users.
+- Enable or disable user accounts, subject to permissions.
+
+### 🔎 Investigation Findings
+- Record and manage findings associated with investigation cases.
+- Organize investigation-related information.
+
+### 📝 Investigation Notes
+- Maintain notes associated with cases.
+- Support documentation of investigation activities.
+
+### 📋 Audit Tracking
+- Record relevant application activities.
+- Support monitoring of user actions and administrative operations.
+
+### 🛡️ Administrative Dashboard
+- Access user management features.
+- Manage investigator accounts.
+- Access administrative functions according to assigned permissions.
+
+---
+
+## 👤 User Roles
+
+CyberTrace supports different user roles with distinct responsibilities.
+
+| Role | Responsibilities |
+|---|---|
+| Administrator | User management, investigator management, and administrative operations. |
+| Investigator | Access assigned cases and perform permitted investigation activities. |
+
+Access to individual features depends on the permissions enforced by the backend.
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React.js** – Component-based user interface.
+- **JavaScript** – Application functionality.
+- **Vite** – Development server and build tooling.
+- **Axios** – HTTP communication with backend APIs.
+- **HTML5** – Application structure.
+- **CSS3** – Styling and layout.
+
+### Backend
+- **Java** – Backend programming language.
+- **Spring Boot** – REST API development.
+- **Spring Security** – Authentication and authorization.
+- **Maven** – Dependency management and build automation.
+
+### Database
+- **MySQL** – Persistent storage for application data.
+
+---
+
+## 🏗️ Project Architecture
+
+CyberTrace follows a frontend–backend architecture.
+
+```text
+┌─────────────────────────────┐
+│          User               │
+│   Administrator /           │
+│       Investigator          │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│       React Frontend        │
+│                             │
+│   Components and Pages      │
+│   Forms and Dashboards      │
+│   Axios API Requests        │
+└──────────────┬──────────────┘
+               │
+               │ HTTP / REST API
+               ▼
+┌─────────────────────────────┐
+│      Spring Boot Backend    │
+│                             │
+│   Authentication            │
+│   Authorization             │
+│   Business Logic            │
+│   Case and User Management  │
+└──────────────┬──────────────┘
+               │
+               │ Database Operations
+               ▼
+┌─────────────────────────────┐
+│          MySQL              │
+│                             │
+│   Users and Roles           │
+│   Cases and Findings        │
+│   Investigation Records     │
+└─────────────────────────────┘
+```
+
+The frontend sends HTTP requests to the Spring Boot backend. The backend processes requests, applies authorization rules, and interacts with the MySQL database when required.
+
+---
+
+## 📂 Project Structure
+
+The frontend repository follows a structure similar to the one below. The exact files may vary depending on the current implementation.
+
+```text
+CyberTrace-Frontend/
+│
+├── public/
+│
+├── src/
+│   ├── api/
+│   │   └── axios.js
+│   │
+│   ├── assets/
+│   │
+│   ├── components/
+│   │
+│   ├── pages/
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── ...
+│
+├── .gitignore
+├── index.html
+├── package.json
+├── package-lock.json
+├── vite.config.js
+└── README.md
+```
+
+### Repository Links
+
+- **Frontend:** [CyberTrace-Frontend](https://github.com/nithya1018/CyberTrace-Frontend)
+- **Backend:** [CyberTrace-Backend](https://github.com/nithya1018/CyberTrace-Backend)
+
+---
+
+## 🚀 Getting Started
+
+Follow these instructions to run the frontend locally.
+
+### Prerequisites
+
+Install the following software:
+
+- Node.js
+- npm
+- Git
+
+The Spring Boot backend and MySQL database must also be configured and running for features that require server communication.
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/nithya1018/CyberTrace-Frontend.git
+```
+
+### Step 2: Navigate to the Project Directory
+
+```bash
+cd CyberTrace-Frontend
+```
+
+### Step 3: Install Dependencies
 
 ```bash
 npm install
+```
+
+This installs the frontend dependencies defined in `package.json`.
+
+### Step 4: Configure the Backend API URL
+
+Ensure that the Axios configuration points to the correct backend address.
+
+For local development, the backend may use:
+
+```text
+http://localhost:8080
+```
+
+The actual API base URL depends on your backend configuration.
+
+If the project uses environment variables for API configuration, create a local `.env` file using the variable name expected by the existing frontend code.
+
+For example, a Vite application may use:
+
+```env
+VITE_API_URL=http://localhost:8080/api
+```
+
+**Important:** Use this example only if your Axios configuration reads `import.meta.env.VITE_API_URL`. Do not change the variable name without checking your existing code.
+
+### Step 5: Start the Frontend
+
+```bash
 npm run dev
 ```
 
-Opens at **http://localhost:3000** — this port is forced in `vite.config.js`
-specifically because the backend's `SecurityConfig.java` only allows CORS
-from `http://localhost:3000`. If you ever change the frontend port, update
-`corsConfigurationSource()` in the backend to match, or you'll get CORS
-errors in the browser console.
+Vite will display the local development URL in the terminal.
 
-**Your backend must already be running on `http://localhost:8080`** (via
-`.\mvnw.cmd spring-boot:run` in the backend project) before you start the
-frontend — the frontend makes no sense without it.
+The default URL is usually:
 
-## What's included
-
-```
-src/
-├── api/axios.js          Axios instance — attaches JWT to every request,
-│                         auto-logs-out on 401
-├── context/AuthContext.jsx   Login/register/logout state, persisted to
-│                             localStorage so refresh doesn't log you out
-├── components/
-│   ├── Navbar.jsx         Top nav, role-aware (Admin sees extra links)
-│   └── ProtectedRoute.jsx Route guard — redirects to /login if not
-│                          authenticated, or to /dashboard if wrong role
-├── pages/
-│   ├── Login.jsx / Register.jsx
-│   ├── Dashboard.jsx      Role-aware home: stats + recent cases
-│   │                      (Admin sees all cases, Investigator sees
-│   │                      only their assigned ones)
-│   ├── Cases.jsx          Full case list + create-case form
-│   ├── CaseDetail.jsx     The big one — tabs for Evidence (upload +
-│   │                      SHA-256 hash display + chain-of-custody
-│   │                      drill-down), Investigation Notes, Findings
-│   ├── AdminUsers.jsx     Admin-only: list users, enable/disable
-│   └── AdminAuditLogs.jsx Admin-only: audit trail table
-└── styles.css             Dark "investigation console" theme
+```text
+http://localhost:5173
 ```
 
-## How auth flows
+Open the displayed URL in your browser.
 
-1. `/register` → `POST /api/auth/register` (choose ADMIN or INVESTIGATOR)
-2. `/login` → `POST /api/auth/login` → backend returns a JWT → stored in
-   `localStorage` as `ct_token`
-3. Every subsequent API call automatically attaches
-   `Authorization: Bearer <token>` via the axios interceptor
-4. If the backend ever returns 401 (expired/invalid token), the interceptor
-   clears storage and bounces you back to `/login`
+### Step 6: Log In
 
-## Testing without the UI (Postman)
+Once the frontend, backend, and database are running, open the application and log in using a valid account.
 
-You can still hit the backend directly with Postman exactly as described in
-the backend's own README — the frontend is just a UI layer on top of the
-same REST API. Both can be used interchangeably; whatever you create via
-Postman shows up in the UI and vice versa, since they're hitting the same
-database.
+The available pages and actions depend on the authenticated user's role and permissions.
 
-## Known gaps / good next steps for you to extend yourself
+---
 
-- No pagination on the cases/users/audit-log tables — fine for a demo
-  dataset, would need it for anything larger.
-- No "assign investigator" dropdown on case creation yet — `CaseRequest`
-  already supports `assignedToUserId`, the form just doesn't expose a
-  picker. Good small feature to add yourself: fetch
-  `/api/admin/investigators` and render a `<select>`.
-- No PDF "Generate Investigation Report" button yet (your poster lists
-  this as a feature) — you'd combine the case + notes + findings data
-  into a printable view. A reasonable approach: a new route
-  `/cases/:id/report` that renders a print-friendly page and calls
-  `window.print()`, or a backend endpoint that returns a generated PDF.
-- No file download/preview for uploaded evidence — currently you can
-  upload and see metadata/hash, but there's no "download original file"
-  button wired up. The backend already stores the file on disk
-  (`storagePath`); you'd add a `GET /api/evidence/{id}/download` endpoint
-  that streams it back.
+## ⚙️ Backend Configuration
+
+CyberTrace requires its backend for authentication, case management, user management, and database operations.
+
+### Backend Repository
+
+https://github.com/nithya1018/CyberTrace-Backend
+
+### Backend Prerequisites
+
+- Java JDK
+- Maven or the included Maven Wrapper
+- MySQL
+
+### General Setup
+
+1. Clone the backend repository.
+2. Configure the MySQL database.
+3. Set the required database connection properties.
+4. Configure authentication-related secrets and environment variables.
+5. Start the Spring Boot application using the project's Maven configuration.
+6. Ensure the frontend API URL matches the running backend address.
+
+The backend must be configured according to its actual application properties and environment variables.
+
+**Security note:** Never commit database passwords, JWT signing secrets, private keys, or other sensitive configuration values to a public repository.
+
+---
+
+## 🔐 Demo Login
+
+CyberTrace provides role-based access for administrative and investigation workflows.
+
+### Administrator Account
+
+The administrator account is intended for evaluating features such as:
+
+- User management.
+- Investigator account management.
+- Case management.
+- Administrative operations.
+
+### Faculty Evaluation Instructions
+
+1. Open the deployed application, if available.
+2. Navigate to the login page.
+3. Enter the administrator credentials shared privately for evaluation.
+4. Click **Login**.
+5. Explore the available administrative features.
+
+**Demo credentials will be shared separately with the evaluating faculty.**
+
+The administrator account must exist in the database used by the running application. A local account will not automatically exist in a separately deployed database.
+
+---
+
+## 🛡️ Security Considerations
+
+CyberTrace is developed as an academic cybersecurity project.
+
+Security considerations include:
+
+- Authentication and role-based authorization.
+- Restricted access to administrative functionality.
+- Separation of frontend presentation and backend business logic.
+- Server-side validation and authorization for protected operations.
+- Careful handling of investigation records and user information.
+- Protection of database credentials and authentication secrets.
+
+The frontend alone must not be treated as a security boundary. Access restrictions must also be enforced by the backend.
+
+Before production use, additional security testing, deployment hardening, secure secret management, and forensic evidence integrity controls should be reviewed.
+
+---
+
+## 🔮 Future Enhancements
+
+Potential future improvements include:
+
+- Cryptographic hash verification for digital evidence.
+- Evidence chain-of-custody tracking.
+- Advanced forensic investigation reports.
+- Improved audit monitoring and reporting.
+- Automated alerts for suspicious activities.
+- Enhanced dashboard analytics.
+- More detailed investigation timelines.
+- Additional security validation and testing.
+
+These are potential enhancements and may not be implemented in the current version.
+
+---
+
+## 🎓 Project Purpose
+
+CyberTrace demonstrates the development of a full-stack cybersecurity application integrating a modern web interface, REST APIs, backend authentication, role-based authorization, and relational database management.
+
+The project focuses on organizing digital forensic case information and supporting structured investigation workflows.
+
+---
+
+## 👩‍💻 Developer
+
+**GitHub:** [nithya1018](https://github.com/nithya1018)
+
+**LinkedIn:** [LinkedIn Profile](https://linkedin.com/in/nithya1018)
+
+---
+
+**CyberTrace — Organizing Investigations. Supporting Digital Forensics.**
