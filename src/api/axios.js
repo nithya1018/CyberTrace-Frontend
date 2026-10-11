@@ -1,14 +1,17 @@
+
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://cybertrace-backend-bug4.onrender.com/api',
 });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('ct_token');
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
@@ -20,6 +23,7 @@ api.interceptors.response.use(
       localStorage.removeItem('ct_user');
       window.location.href = '/login';
     }
+
     return Promise.reject(error);
   }
 );
