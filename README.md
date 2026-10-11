@@ -235,13 +235,13 @@ The actual API base URL depends on your backend configuration.
 
 If the project uses environment variables for API configuration, create a local `.env` file using the variable name expected by the existing frontend code.
 
-For example, a Vite application may use:
+This project reads `VITE_API_URL` from the Vite build environment. Set it to the backend URL ending in `/api`. For example:
 
 ```env
 VITE_API_URL=http://localhost:8080/api
 ```
 
-**Important:** Use this example only if your Axios configuration reads `import.meta.env.VITE_API_URL`. Do not change the variable name without checking your existing code.
+For Vercel, add `VITE_API_URL` under the project's Environment Variables, then redeploy so the value is included in the frontend build. The repository includes a Vercel rewrite so client-side routes such as `/login` continue to load on refresh.
 
 ### Step 5: Start the Frontend
 
