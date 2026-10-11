@@ -14,6 +14,7 @@ export default function Cases() {
     String(user?.userId ?? 'unknown') + ':' + String(user?.role ?? 'unknown'),
   );
   const [investigators, setInvestigators] = useState([]);
+  const [investigatorsLoading, setInvestigatorsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -23,20 +24,26 @@ export default function Cases() {
 
   useEffect(() => {
     if (isAdmin) {
+      setInvestigatorsLoading(true);
       api.get('/admin/investigators')
         .then((res) => setInvestigators(res.data))
-        .catch(() => setActionError('Failed to load investigators'));
+        .catch(() => setActionError('Failed to load investigators'))
+        .finally(() => setInvestigatorsLoading(false));
     }
   }, [isAdmin]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
     setActionError('');
+    if (!assignedToUserId) {
+      setActionError('Choose an investigator before creating the case');
+      return;
+    }
     try {
       await api.post('/cases', {
         title,
         description,
-        assignedToUserId: assignedToUserId ? Number(assignedToUserId) : null,
+        assignedToUserId: Number(assignedToUserId),
       });
       setTitle('');
       setDescription('');
@@ -93,9 +100,11 @@ export default function Cases() {
             <label>Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
 
-            <label>Assign Investigator (optional)</label>
-            <select value={assignedToUserId} onChange={(e) => setAssignedToUserId(e.target.value)}>
-              <option value="">-- Unassigned --</option>
+            <label>Assign Investigator</label>
+            <select value={assignedToUserId} onChange={(e) => setAssignedToUserId(e.target.value)} required>
+              <option value="" disabled>
+                {investigatorsLoading ? 'Loading investigators…' : '-- Choose an investigator --'}
+              </option>
               {investigators.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name} ({u.email})
@@ -103,7 +112,12 @@ export default function Cases() {
               ))}
             </select>
 
-            <button type="submit" className="btn-primary">Create Case</button>
+            {investigators.length === 0 && !investigatorsLoading && (
+              <p className="empty-state">No active investigators are available. Add or enable an investigator first.</p>
+            )}
+            <button type="submit" className="btn-primary" disabled={investigatorsLoading || investigators.length === 0}>
+              Create Case
+            </button>
           </form>
         )}
 

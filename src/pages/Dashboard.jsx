@@ -5,9 +5,8 @@ import useCaseList from '../hooks/useCaseList';
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const endpoint = user.role === 'ADMIN' ? '/cases' : '/cases/my-cases';
   const { cases, loading, error } = useCaseList(
-    endpoint,
+    '/cases',
     String(user?.userId ?? 'unknown') + ':' + String(user?.role ?? 'unknown'),
   );
 
