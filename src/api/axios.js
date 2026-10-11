@@ -2,7 +2,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://cybertrace-backend-bug4.onrender.com/api',
+  // Set VITE_API_URL in the hosting provider to the backend's /api URL.
+  // The fallback keeps the existing public Render deployment working.
+  baseURL: (import.meta.env.VITE_API_URL || 'https://cybertrace-backend-bug4.onrender.com/api').replace(/\/$/, ''),
 });
 
 api.interceptors.request.use((config) => {
