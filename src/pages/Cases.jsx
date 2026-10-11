@@ -3,40 +3,35 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import useCaseList from '../hooks/useCaseList';
 
 export default function Cases() {
   const { user } = useAuth();
   const isAdmin = user?.role === 'ADMIN';
 
-  const [cases, setCases] = useState([]);
+  const { cases, loading, error: casesError, refreshCases } = useCaseList(
+    '/cases',
+    String(user?.userId ?? 'unknown') + ':' + String(user?.role ?? 'unknown'),
+  );
   const [investigators, setInvestigators] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [assignedToUserId, setAssignedToUserId] = useState('');
-  const [error, setError] = useState('');
-
-  const loadCases = () => {
-    setLoading(true);
-    api.get('/cases')
-      .then((res) => setCases(res.data))
-      .catch(() => setError('Failed to load cases'))
-      .finally(() => setLoading(false));
-  };
+  const [actionError, setActionError] = useState('');
+  const error = actionError || casesError;
 
   useEffect(() => {
-    loadCases();
     if (isAdmin) {
       api.get('/admin/investigators')
         .then((res) => setInvestigators(res.data))
-        .catch(() => setError('Failed to load investigators'));
+        .catch(() => setActionError('Failed to load investigators'));
     }
-  }, []);
+  }, [isAdmin]);
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    setError('');
+    setActionError('');
     try {
       await api.post('/cases', {
         title,
@@ -47,31 +42,31 @@ export default function Cases() {
       setDescription('');
       setAssignedToUserId('');
       setShowForm(false);
-      loadCases();
+      void refreshCases();
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Failed to create case');
+      setActionError(err.response?.data?.message || err.response?.data?.error || 'Failed to create case');
     }
   };
 
   const handleAssign = async (caseId, investigatorId) => {
     if (!investigatorId) return;
-    setError('');
+    setActionError('');
     try {
       await api.patch(`/cases/${caseId}/assign`, { investigatorId: Number(investigatorId) });
-      loadCases();
+      void refreshCases();
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Failed to assign case');
+      setActionError(err.response?.data?.message || err.response?.data?.error || 'Failed to assign case');
     }
   };
 
   const handleDelete = async (caseId) => {
     if (!window.confirm(`Delete case #${caseId}? This cannot be undone.`)) return;
-    setError('');
+    setActionError('');
     try {
       await api.delete(`/cases/${caseId}`);
-      loadCases();
+      void refreshCases();
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Failed to delete case');
+      setActionError(err.response?.data?.message || err.response?.data?.error || 'Failed to delete case');
     }
   };
 

@@ -1,21 +1,15 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import useCaseList from '../hooks/useCaseList';
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [cases, setCases] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const endpoint = user.role === 'ADMIN' ? '/cases' : '/cases/my-cases';
-    api.get(endpoint)
-      .then((res) => setCases(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setCases([]))
-      .finally(() => setLoading(false));
-  }, [user.role]);
+  const endpoint = user.role === 'ADMIN' ? '/cases' : '/cases/my-cases';
+  const { cases, loading, error } = useCaseList(
+    endpoint,
+    String(user?.userId ?? 'unknown') + ':' + String(user?.role ?? 'unknown'),
+  );
 
   const counts = {
     total: cases.length,
@@ -30,6 +24,7 @@ export default function Dashboard() {
       <div className="page-container">
         <h1>Welcome, {user.name}</h1>
         <p className="role-badge">{user.role}</p>
+        {error && <div className="alert-error">{error}</div>}
 
         <div className="stats-grid">
           <div className="stat-card"><span>{counts.total}</span><p>Total Cases</p></div>

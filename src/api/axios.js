@@ -5,6 +5,7 @@ const api = axios.create({
   // Set VITE_API_URL in the hosting provider to the backend's /api URL.
   // Production must set VITE_API_URL to the Railway service's /api URL.
   baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:8080/api').replace(/\/$/, ''),
+  timeout: 12000,
 });
 
 api.interceptors.request.use((config) => {
