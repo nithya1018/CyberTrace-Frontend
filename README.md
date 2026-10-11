@@ -241,7 +241,7 @@ This project reads `VITE_API_URL` from the Vite build environment. Set it to the
 VITE_API_URL=http://localhost:8080/api
 ```
 
-For Vercel, add `VITE_API_URL` under the project's Environment Variables, then redeploy so the value is included in the frontend build. The repository includes a Vercel rewrite so client-side routes such as `/login` continue to load on refresh.
+For Vercel, set `VITE_API_URL` under the project's Production Environment Variables to the Railway public URL ending in `/api`, then redeploy so the value is included in the frontend build. The backend's Railway `CORS_ALLOWED_ORIGINS` must include `https://cyber-trace-frontend-alpha.vercel.app`. The repository includes a Vercel rewrite so client-side routes such as `/login` continue to load on refresh.
 
 ### Step 5: Start the Frontend
 
