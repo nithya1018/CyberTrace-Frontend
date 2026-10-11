@@ -6,7 +6,6 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('INVESTIGATOR');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,7 +17,7 @@ export default function Register() {
     setError('');
     setLoading(true);
     try {
-      await register(name, email, password, role);
+      await register(name, email, password);
       setSuccess(true);
       setTimeout(() => navigate('/login'), 1200);
     } catch (err) {
@@ -46,12 +45,6 @@ export default function Register() {
         <label>Password</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                minLength={6} required />
-
-        <label>Role</label>
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="INVESTIGATOR">Investigator</option>
-          <option value="ADMIN">Admin</option>
-        </select>
 
         <button type="submit" disabled={loading}>
           {loading ? 'Creating account...' : 'Register'}

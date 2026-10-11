@@ -18,7 +18,11 @@ export default function Login() {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Login failed');
+      if (err.response?.status === 401) {
+        setError('Invalid email or password. If this is your first deployment, ask the administrator to provision your account.');
+      } else {
+        setError(err.response?.data?.message || err.response?.data?.error || 'Could not connect to the sign-in service. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -44,6 +48,9 @@ export default function Login() {
 
         <p className="auth-switch">
           No account? <Link to="/register">Register here</Link>
+        </p>
+        <p className="auth-switch">
+          Administrator accounts are provisioned privately. Contact your system administrator for access.
         </p>
       </form>
     </div>
